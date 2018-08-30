@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="shortcut icon" href="//www.ibm.com/favicon.ico" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+    
+    <link href="https://fonts.googleapis.com/css?family=IBM Plex Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/svg.css') }}">
+    <script src="static/js/pop-up.js"></script>  
+
+    <script>
+        def_string = ''  // definitions will be inserted into this variable prior to opening a modal definition popup
+        metrics_json = '' 
+        datasets_json = '' 
+        algorithms_json = '' 
+        glossary_json = '' 
+
+        $(document).ready(function() {
+            $(".nav-item a").on("click touchend", function(e) {
+                var el = $(this);
+                var link = el.attr("href");
+                window.location = link;
+            })
+        })
+        $(document).ready(function() {
+            $(".card-deck a").on("click touchend", function(e) {
+                // do nothing ... needed to prevent need for iOS double taps after drag
+            })
+        })
+        $.ajax({
+            type: "POST",
+            url: "/demo/get_data",
+            //data: f,
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            error: function(jqXHR, textStatus, errorMessage) {
+                console.error(errorMessage);
+            },
+            success: function(data) {
+                //console.log(data)
+                overview_json = data.overview 
+                metrics_json = data.metrics 
+                //console.log(metrics_json)
+                datasets_json = data.datasets
+                //console.log(datasets_json)
+                algorithms_json = data.algorithms
+                //console.log(algorithms_json)
+                glossary_json = data.glossary 
+                //console.log(glossary_json)
+            }
+        })
+
+    </script>
+
+    <title>{% block title %}{% endblock %}</title>
+    {% endblock %}
+</head>
+<body>
+    <div id="content">{% block content %}{% endblock %}</div>
+    <div id="footer">
+        {% block footer %}
+        <!-- <p class="text-center small"><a class="license" href="http://domain.invalid/"><br>IBM Samya Toolbox end user license agreement</a></p> -->
+        <br/>
+        {% endblock %}
+    </div>
+</body>
+</html>

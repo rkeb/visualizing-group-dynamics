@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}AI Fairness Toolbox - Experiment{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script type="text/javascript" charset="utf-8">
+        var data = sessionStorage.getItem('data');
+        var attributes = sessionStorage.getItem('attributes');
+        var metadata = {{ metadata|tojson|safe }}
+        var columns = (metadata[data].protected_attributes.columns)
+        console.log('attributes: ' + attributes)
+        console.log(metadata)
+        $(window).on('load', function() {
+            var innerHTML = ''
+            if (attributes) {
+                // check only those attributes that have been previously selected
+                var attribute_array = attributes.split(',')
+                columns.forEach(function(label) {
+                    if (attribute_array.includes(label))
+                        innerHTML += '<input type="checkbox" id="checkbox-' + label + '" value="' + label + '" checked> ' +  label + '<br/>'
+                    else
+                        innerHTML += '<input type="checkbox" id="checkbox-' + label + '" value="' + label + '"> ' +  label + '<br/>'
+                })
+            }
+            else {
+                // check all attributes (may want to revisit if there are many attributes later)
+                columns.forEach(function(label) {
+                    innerHTML += '<input type="checkbox" id="checkbox-' + label + '" value="' + label + '" checked> ' +  label + '<br/>'
+                })
+            }
+            document.getElementById('protected_attributes').innerHTML = innerHTML
+        })
+        function showDefinition(str) {
+            def_string = 'insert definition from json for: ' + str
+            $("#definition").modal()
+        }
+        $(window).on('shown.bs.modal', function() {
+            var div = document.getElementById('def-content')
+            if (div)
+                div.innerHTML = def_string
+        })
+        function next() {
+            var str = ''
+            columns.forEach(function(label) {
+                var checkbox = document.getElementById('checkbox-' + label)
+                if (checkbox.checked) {
+                    str += label + ','
+                }
+            })
+            if (str == '') {
+                $("#notReady").modal()
+                return
+            }
+            str = str.substring(0, str.length-1)
+            sessionStorage.setItem('attributes', str)
+            location = '/metrics'
+        }
+        function prev() {
+            var str = ''
+            columns.forEach(function(label) {
+                var checkbox = document.getElementById('checkbox-' + label)
+                if (checkbox.checked) {
+                    str += label + ','
+                }
+            })
+            str = str.substring(0, str.length-1)
+            sessionStorage.setItem('attributes', str)
+            location = '/data'
+        }
+    </script>
+{% endblock %}
+{% block content %}
+
+<!-- ****************** navbar ****************** -->
+<nav class="navbar sticky-top navbar-expand-md navbar-dark mr-auto">
+    <span class="navbar-brand d-flex flex-fill" aria-label="breadcrumb"><a href="#">IBM Research AI</a></span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent" style="font-size: larger">
+        <ul class="navbar-nav justify-content-left d-flex flex-fill">
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Demo</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/resources">Resources</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/people">People</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br/>
+
+<!-- ****************** top section ****************** -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <h1 style="font-size: 14pt">Bias Check and Repair Demo</h1>
+            <ul class="prog-steps">
+                <li id="li-data" class="set">Data</li>
+                <li class="current">Check</li>
+                <li class="inactive">Repair</li>
+                <li class="inactive">Results</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<br/>
+
+<!-- ****************** main panel ****************** -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="steppanel rounded">
+                <div>
+                    <span class="steppanel-title">2. Select attributes</span>
+                    <br/><br/>
+                    <form action="">
+                        <div id='protected_attributes'></div>
+                    </form>
+                    <br/><br/>
+                    <button type="button" class="btn btn-primary" onclick="prev()">Back</button>
+                    <button type="button" class="btn btn-primary" onclick="next()">Next</button>
+                </div>
+            </div> 
+        </div>
+    </div>
+</div>
+
+<!-- ****************** modals ****************** -->
+<div class="modal fade" id="notReady" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p><div>Please select at least one attribute before continuing.</div></p>
+                <br/>
+                <div><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="definition" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p><div id="def-content"></div></p>
+                <br/>
+                <div><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    // add listeners for data
+    var li_data = document.getElementById('li-data');
+    li_data.addEventListener('click', function(e) {
+        document.location="/data"
+    }, false);
+    li_data.addEventListener('mouseover', function(e) {
+        $('#li-data').css('cursor', 'pointer');
+    }, false);
+</script>
+{% endblock %}

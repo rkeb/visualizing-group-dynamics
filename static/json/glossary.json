@@ -1,0 +1,22 @@
+{
+	"Machine learning algorithm": "Produces a predictive model from an historical dataset. For example, a classifier algorithm is trained on data from the training set and then is run on data from the test dataset and generates predictions.", 
+	"Original or historical dataset": "This is the dataset that is used for training a model and testing.",
+	"Training dataset": "Derived from the original or historical dataset. This data is used to train the classifier",
+	"Test dataset": "Derived from the original or historical dataset. This data is used to test the classifier",
+	"Predicted Variable": "This is the variable that the model labels, for example if the model predicts credit risk, credit risk would be the predicted variable.",
+	"Target Variable": "see Predicted Variable.",
+	"Predicted dataset": "This is a dataset that includes a column indicating the prediction for the target or predicted variable.",
+	"Classified dataset": "See Predicted dataset.",
+	"Protected variable": "This is any variable in the dataset that should not be considered when making a decision, e.g. gender, race.",
+	"Protected attribute": "Also called Protected variable. This is any variable in the dataset that should not be considered when making a decision, e.g. gender, race.",
+	"Sensitive attribute": "Also called Protected variable. This is any variable in the dataset that should not be considered when making a decision, e.g. gender, race.",
+	"Sensitive variable": "Also called Protected variable. This is any variable in the dataset that should not be considered when making a decision, e.g. gender, race.",
+	"Fairness Metric": "a number/value/statistic associated with one or more datasets, produces a value.",
+	"Checker": "Compares a value to a threshold and perhaps also takes other actions. User would need to provide (or if they request then we can suggest the typical one others use).",
+	"Remediator": "Also referred to as Mitigator. Compares a value to a threshold and perhaps also takes other actions. User would need to provide (or if they request then we can suggest the typical one others use).",
+	"Debiasing vs fixer vs remediator vs mitigator": "This is the algorithm that is run to make changes such that the resulting predictions are fairer.",
+	"Bias Mitigation": "",
+	"Polar target variable":  "any target variable where some values are better for a person than others, e.g. getting a loan is better than not getting one, being assigned to a clinical trial is better than not being assigned, being assigned to a class that is the same as your selected preference is better than being assigned to one that does not reflect your preference.",
+	"Pre-processed dataset": "This is a dataset that has been run through a debasing [jm debiasing] algorithm to transform it to make it fairer"
+}
+		

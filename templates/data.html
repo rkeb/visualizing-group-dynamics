@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}AI Fairness Toolkit - Demo{% endblock %}
+{% block head %}
+    {{ super() }}
+    
+    <script type="text/javascript" charset="utf-8">
+        $(window).on('load', function() {
+            var data = sessionStorage.getItem('data')
+            console.log('data: ' + data)
+            if (data) {
+                var radio = document.getElementById(data)
+                radio.checked = true
+            };
+        })
+        function setSelection(str) {
+            sessionStorage.setItem('data', str)
+            sessionStorage.setItem('attributes', '')
+            sessionStorage.setItem('metrics', '')
+            return
+        }
+
+        $(window).on('shown.bs.modal', function() {
+            var div = document.getElementById('def-content')
+            if (div)
+                div.innerHTML = def_string
+        })
+
+        function next() {
+            var data = sessionStorage.getItem('data')
+            if (data == '') {
+                $("#notReady").modal()
+                return
+            }
+            location = '/check'
+        }
+    </script>
+{% endblock %}
+{% block content %}
+
+<!-- ****************** navbar ****************** -->
+<nav class="navbar sticky-top navbar-expand-md navbar-dark mr-auto">
+    <span class="navbar-brand d-flex flex-fill" aria-label="breadcrumb"><a href="#">IBM Research Trusted AI</a></span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent" style="font-size: larger">
+        <ul class="navbar-nav justify-content-left d-flex flex-fill">
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Demo</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/resources">Resources</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/people">People</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/community">Community</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br/>
+
+<!-- ****************** top section ****************** -->
+<div class="container-fluid top-section">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="title">Bias Check and Repair Demo</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5">
+            <ul class="prog-steps">
+                <li class="current">Data</li>
+                <li class="inactive">Check</li>
+                <li class="inactive">Mitigate</li>
+                <li class="inactive">Compare</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary float-right step-button" onclick="next()">Next</button>
+        </div>
+    </div>
+</div>
+<br/>
+
+<!-- ****************** step panel ****************** -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="step-panel">
+                <h2 class="title">1. Choose sample data set</h2>
+                <p>Bias occurs in data used to train a model. We have provided three sample datasets that you can use to explore bias checking and repair. Each dataset identifies attributes that should be protected to avoid bias.</p>
+                {% for dataset in datasets %}
+                    <div><input type="radio" name="radio-group" id="{{dataset.id}}" onclick="setSelection('{{dataset.id}}')"><span class="choice"> {{dataset.name}}</span></div>
+                    <div class="description">{{dataset.description}}</div>
+                    <div class="description"><span class="definition" onclick="showDefinition('Protected attribute')">Protected Attributes:</span> {{dataset.attributes}}</div>
+                    <div class="description">{{dataset.size}}</div>
+                    <br/>
+                {% endfor %}
+                <!--
+                <div><input type="radio" name="radio-group" id="german" onclick="setSelection('german')"><span class="choice"> German credit scoring</span></div>
+                <div class="description">Determines whether granting credit is recommended</div>
+                <div class="description"><span class="definition" onclick="showDefinition('Protected attribute')">Protected Attributes:</span> Gender, Age</div>
+                <div class="description">65,000 records</div>
+                <br/>
+                <div><input type="radio" name="radio-group" id="adult" onclick="setSelection('adult')"><span class="choice"> Adult census income</span></div>
+                <div class="description">Predicts whether annual income exceeds $50K</div>
+                <div class="description"><span class="definition" onclick="str = 'protected-attribute'; showDefinition(str = 'protected-attribute')">Protected Attributes:</span> Race, Gender</div>
+                <div class="description">xx,xxx records</div>
+                <br/>
+                <div><input type="radio" name="radio-group" id="compas" onclick="setSelection('compas')"><span class="choice"> ProPublica Recidivism</span></div>
+                <div class="description">Predicts whether people are likely to re-offend</div>
+                <div class="description"><span class="definition" onclick="showDefinition('protected-attribute')">Protected Attributes:</span> Gender, Race</div>
+                <div class="description">xx,xxx records</div>
+                -->
+            </div> 
+        </div>
+    </div>
+</div>
+
+<!-- ****************** modals ****************** -->
+<div class="modal" id="notReady" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p><div>Please select a dataset before continuing.</div></p>
+                <div><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="definition" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p><div id="def-content">
+                </div></p>
+                <div><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block title %}AI Fairness Toolkit - Resources{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script type="text/javascript" charset="utf-8">
+        function github() {
+            location = "https://github.ibm.com/samya/samya-bias-toolbox";
+        }
+        $("#tabs ul.ui-widget-header")
+            .delegate("li.ui-tabs-selected","mousedown",function(){
+            $tabs.tabs("load",$(this).index());
+        });
+    </script>
+{% endblock %}
+{% block content %}
+
+<!-- ****************** navbar ****************** -->
+<nav class="navbar sticky-top navbar-expand-md navbar-dark mr-auto">
+    <span class="navbar-brand d-flex flex-fill" aria-label="breadcrumb"><a href="#">IBM Research Trusted AI</a></span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent" style="font-size: larger">
+        <ul class="navbar-nav justify-content-left d-flex flex-fill">
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/data">Demo</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Resources</a>
+            </li>
+             <li class="nav-item inactive">
+                <a class="nav-link" href="/people">People</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/community">Community</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br/>
+
+<!-- ****************** top section ****************** -->
+<div class="container-fluid top-section">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="title">IBM Research AI Fairness 360</h1>
+        </div>
+    </div>
+    <br/>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#overview">Overview </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#datasets">Datasets</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#metrics">Metrics</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#mitigators">Mitigators</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#glossary">Glossary</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- ****************** tab panes ****************** -->
+<div class="tab-content resources-panel" id="tabs">
+    <!-- OVERVIEW -->
+    <div class="tab-pane active" id="overview">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <p>
+                        A machine learning model makes predictions of an outcome for a particular instance. (Given an instance of a loan application, predict if the applicant will repay the loan.) The model makes these predictions based on a training dataset, where many other instances (other loan applications) and actual outcomes (did they repay?) are provided. Thus, a machine learning algorithm will attempt to find patterns, or generalizations, in the training dataset to use when a prediction for a new instance is needed. (For example, one pattern might be "if a person has salary > $40K and has outstanding debt < $5, they will repay the loan".) In many domains this technique has worked very well.
+                    </p>
+                    <p>
+                        However, sometimes the patterns that are found may not be desirable or may even be illegal. For example, a loan repay model may determine that race plays a significant role in the prediction of repayment because the training data set happened to have better repayment for one race than for another. This raises two problems: 1) the training data set may not be representative of the true population of people of all races, and 2) even if it is representative, it is illegal to base any decision on a applicant's race, regardless of whether this is a good prediction in the past.
+                    </p>
+                    <p>
+                        IBM's AI Fairness Open Source Toolkit is designed to help address this problem by providing bias metrics and bias mitigators. Bias metrics can be used to check for bias in machine learning workflows. Bias mitigators can be used to overcome bias in the workflow to produce a more fair outcome.
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- DATASETS -->
+    <div class="tab-pane fade" id="datasets">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    {% for dataset in datasets %}
+                        <p>
+                            <span style="font-weight: 600">{{dataset.name}}</span>
+                            <br/>
+                            {{dataset.description}}
+                            <br/>
+                            <a href="{{dataset.url}}">Learn more</a>
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- METRICS -->
+    <div class="tab-pane fade" id="metrics">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    {% for metric in metrics %}
+                        <p>
+                            <span style="font-weight: 600">{{metric.name}}</span>
+                            <br/>
+                            {{metric.description}}
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- REMEDIATORS -->
+    <div class="tab-pane fade" id="mitigators">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    {% for algorithm in algorithms %}
+                        <p>
+                            <span style="font-weight: 600">{{algorithm.name}}</span>
+                            <br/>
+                            {{algorithm.description}}
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- GLOSSARY -->
+    <div class="tab-pane fade" id="glossary">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    {% for item in glossary %}
+                        <p>
+                            <span style="font-weight: 600">{{item}}</span>
+                            <br/>
+                            {{glossary[item]}}
+                        </p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

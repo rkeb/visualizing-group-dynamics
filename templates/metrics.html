@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block title %}AI Fairness Toolbox - Experiment{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script type="text/javascript" charset="utf-8">
+        var metrics = sessionStorage.getItem('metrics');
+        console.log('metrics: ' + metrics)
+        var elements = [
+            {label: 'Statistical parity difference', description: 'Difference in favorable outcome probabilities between unprivileged and privileged groups', enabled: true},
+            {label: 'Disparate impact', description: 'Ratio of favorable outcome probabilities between unprivileged and privileged groups', enabled: true},
+            {label: 'Equal Opportunity Difference', description: 'Difference in true positive rates between unprivileged and privileged groups', enabled: true},
+            {label: 'Average odds difference', description: 'Average of difference in true positive rates and false positive rates between unprivileged and privileged groups', enabled: true},
+            {label: 'Theil index', description: 'Inequality index that measures how unequally an algorithm benefits groups in a population', enabled: true}]
+        $(window).on('load', function() {
+            var innerHTML = ''
+            if (metrics) {
+                // check only those metrics that have been previously selected
+                var metric_array = metrics.split(',')
+                elements.forEach(function(metric) {
+                    var label = metric.label
+                    var description = metric.description
+                    var disabled = (metric.enabled) ? '' : 'disabled'
+                    var checked = (metric_array.includes(label)) ? 'checked' : ''
+                    innerHTML += '<div><input type="checkbox" id="checkbox-' + label + '" value="' + label + '" ' + checked + ' ' + disabled + '> ' +  label + '</div>'
+                    innerHTML += '<div class="checkbox-description">' + description + '</div>'
+                })
+            }
+            else {
+                // check all enabled metrics (may want to revisit if there are many metrics later)
+                elements.forEach(function(metric) {
+                    var label = metric.label
+                    var description = metric.description
+                    var disabled = (metric.enabled) ? '' : 'disabled'
+                    var checked = (!disabled) ? 'checked' : ''
+                    innerHTML += '<div><input type="checkbox" id="checkbox-' + label + '" value="' + label + '" ' + checked + ' ' + disabled + '> ' +  label + '</div>'
+                    innerHTML += '<div class="checkbox-description">' + description + '</div>'
+                })
+            }
+            document.getElementById('metrics').innerHTML = innerHTML
+        })
+        function showDefinition(str) {
+            def_string = 'insert definition from json for: ' + str
+            $("#definition").modal()
+        }
+        $(window).on('shown.bs.modal', function() {
+            var div = document.getElementById('def-content')
+            if (div)
+                div.innerHTML = def_string
+        })
+        function next() {
+            var str = ''
+            elements.forEach(function(metric) {
+                label = metric.label
+                checkbox = document.getElementById('checkbox-' + label)
+                if (checkbox.checked) {
+                    str += label + ','
+                }
+            })
+            if (str == '') {
+                $("#notReady").modal()
+                return
+            }
+            str = str.substring(0, str.length-1)
+            sessionStorage.setItem('metrics', str)
+            location = '/report'
+        }
+        function prev() {
+            var str = ''
+            elements.forEach(function(metric) {
+                label = metric.label
+                checkbox = document.getElementById('checkbox-' + label)
+                if (checkbox.checked) {
+                    str += label + ','
+                }
+            })
+            str = str.substring(0, str.length-1)
+            sessionStorage.setItem('metrics', str)
+            location = '/attributes'
+        }
+    </script>
+{% endblock %}
+{% block content %}
+
+<!-- ****************** navbar ****************** -->
+<nav class="navbar sticky-top navbar-expand-md navbar-dark mr-auto">
+    <span class="navbar-brand d-flex flex-fill" aria-label="breadcrumb"><a href="#">IBM Research AI Fairness 360</a></span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent" style="font-size: larger">
+        <ul class="navbar-nav justify-content-left d-flex flex-fill">
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Demo</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/resources">Resources</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/people">People</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br/>
+
+<!-- ****************** top section ****************** -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <h1 style="font-size: 14pt">Bias Check and Repair Demo</h1>
+            <ul class="prog-steps">
+                <li id="li-data" class="set">Data</li>
+                <li id="li-attributes" class="set">Check</li>
+                <li class="current">Repair</li>
+                <li class="inactive">Results</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<br/>
+
+<!-- ****************** main panel ****************** -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="steppanel rounded">
+                <div>
+                    <span class="steppanel-title">3. Select Metrics</span>
+                    <br/><br/>
+                    <form action="">
+                        <div id='metrics'></div>
+                    </form>
+                    <br/><br/>
+                    <button type="button" class="btn btn-primary" onclick="prev()">Back</button>
+                    <button type="button" class="btn btn-primary" onclick="next()">Next</button>
+                </div>
+            </div> 
+        </div>
+    </div>
+</div>
+
+<!-- ****************** modals ****************** -->
+<div class="modal fade" id="notReady" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p><div>Please select at least one metric before continuing.</div></p>
+                <br/>
+                <div><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="definition" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p><div id="def-content"></div></p>
+                <br/>
+                <div><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    // add listeners for data
+    var li_data = document.getElementById('li-data');
+    li_data.addEventListener('click', function(e) {
+        document.location="/data"
+    }, false);
+    li_data.addEventListener('mouseover', function(e) {
+        $('#li-data').css('cursor', 'pointer');
+    }, false);
+    // add listeners for attributes
+    var li_attributes = document.getElementById('li-attributes');
+    li_attributes.addEventListener('click', function(e) {
+        document.location="/attributes"
+    }, false);
+    li_attributes.addEventListener('mouseover', function(e) {
+        $('#li-attributes').css('cursor', 'pointer');
+    }, false);
+</script>
+{% endblock %}

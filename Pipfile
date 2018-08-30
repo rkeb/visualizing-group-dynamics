@@ -1,0 +1,23 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "~=1.0"
+numpy = "*"
+gunicorn = "*"
+pytest = "*"
+
+[dev-packages]
+"flake8" = "*"
+"autopep8" = "*"
+
+[requires]
+python_version = "3.6"
+
+[scripts]
+dev = "env FLASK_APP=app.py FLASK_ENV=development flask run"
+prod = "gunicorn app:app"
+test = "pytest"
+lint = "flake8 app.py"

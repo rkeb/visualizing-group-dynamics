@@ -1,0 +1,134 @@
+/*************************************************/ 
+/*** diagram and global diagram element styles ***/
+/*************************************************/ 
+
+.diagram {
+	display: flex;
+	resize: both;
+	margin-left: 0.5rem;
+	margin-top: -1rem;
+	width: 300px;
+}
+@media screen and (max-width: 400px) {
+	.diagram {
+		width: 260px;
+	}
+}
+
+.diagramElement {
+	flex:1;
+	background: none; /* use LightGray color  for debug. */
+	border-radius: 10px;
+	margin: 5px;
+}
+
+.diagramElementBackgroundHighlight {
+	flex:1;
+	background-color:rgba(11, 189, 186, 0.46); /*#0BBDBA; this is a teal from duo*/
+	border-radius: 16px;
+
+}
+
+.diagramElementBackgroundNolight {
+	flex:1;
+	/*background-color:rgba(255, 255, 255, 1.0); /*white*/ 
+	background: none; /* use LightGray color  for debug. */
+	border-radius: 16px;
+
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+/*debugging class for div alignment*/
+.simpleLine { 
+    height: 60px;
+    position: relative;
+    border:none; /* 3px solid green;*/
+
+}
+
+/***************************************/ 
+/***** line and lie with arrow flow diagram element *****/
+/***************************************/ 
+
+#line, #leftLineMarker,  #rightLineMarker,  #downLineMarker {
+	fill:#CFCFCF;
+	stroke:#CFCFCF;
+	/*stroke:green;*/
+	stroke-dasharray:0;
+	vector-effect:non-scaling-stroke;
+}
+
+#marker, #leftLineMarkerDashed, #rightLineMarkerDashed, #downLineMarkerDashed {
+	fill:#CFCFCF;
+	stroke:#CFCFCF;
+	stroke-dasharray:1;
+	vector-effect:non-scaling-stroke;	
+}
+
+
+#arrow {
+	fill:#CFCFCF;
+	stroke:#CFCFCF;
+	vector-effect:non-scaling-stroke;
+	}
+
+/***************************************/ 
+/***** predictions diagram element *****/
+/***************************************/ 
+
+#predictions {
+	stroke:black;
+
+}
+
+/**********************************/ 
+/*** classifier diagram element ***/
+/**********************************/ 
+
+#classifier {
+	stroke:black;
+	}
+
+#ohGroup {
+	fill:black;
+	}
+
+/******************************/ 
+/***  train diagram element ***/
+/******************************/ 
+
+#trainInnerMaskFill, #trainOuterMaskFill {
+	fill:black;
+}
+
+#trainInnerMask, #trainOuterMask {
+fill:white;
+}
+
+/**************************************/ 
+/***  training data diagram element ***/
+/**************************************/ 
+
+#trainingData {
+	stroke:black;
+}
+
+/**********************************/ 
+/***  test data diagram element ***/
+/**********************************/ 
+
+#testData {
+	stroke:black;
+}
+
+/*****************************/ 
+/***  star diagram element ***/
+/*****************************/ 
+
+#star {
+	stroke:none`;
+	fill:rgba(11, 189, 186, 1.0);
+}

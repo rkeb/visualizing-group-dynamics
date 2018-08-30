@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+{% block title %}AI Fairness Toolbox - Experiment{% endblock %}
+{% block head %}
+    {{ super() }}
+            
+    <!-- Load c3.css -->
+    <link href="/static/css/c3.css" rel="stylesheet">
+    <link href="/static/css/graph.css" rel="stylesheet"> 
+
+    <!-- Load d3.js and c3.js -->
+    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+    <script src="static/js/c3.js"></script>  
+    <script src="static/js/graphs.js"></script>
+
+    
+    <script type="text/javascript" charset="utf-8">
+        var chart;
+        var data = sessionStorage.getItem("data")
+        var attributes = sessionStorage.getItem("attributes")
+        var attribute_array = attributes.split(',')
+        var metrics = sessionStorage.getItem("metrics")
+        var metric_array = metrics.split(',')
+        var mitigation = 'Equal odds post-processing'
+        function showDefinition(str) {
+            def_string = 'insert definition from json for: ' + str
+            $("#definition").modal()
+        }
+        $(window).on('shown.bs.modal', function() {
+            var div = document.getElementById('def-content')
+            if (div)
+                div.innerHTML = def_string
+        })
+        function newreport() {
+            sessionStorage.setItem("data", '')
+            sessionStorage.setItem("attributes", '')
+            sessionStorage.setItem("metrics", '')
+            sessionStorage.setItem("mitigation", '')
+            location = "/data"
+        }
+        function prev() {
+            location = "/metrics"
+        }
+        $(document).ready(function() {
+            var f = new FormData()
+            f.append("dataset", data)
+            f.append("mitigation", 'Reweighing')
+            //f.append("mitigation", 'Equal odds post-processing')
+            attribute_array.forEach(function(attribute) {
+                f.append("protected_attributes", attribute)
+            })
+            metric_array.forEach(function(metric) {
+                f.append("metrics", metric)
+            })
+            $.ajax({
+                type: "POST",
+                url: "/demo/bias_report",
+                data: f,
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                error: function(jqXHR, textStatus, errorMessage) {
+                    console.error(errorMessage);
+                },
+                success: function(data) {
+                    //var results = data.results
+                    //console.log(data)
+                    var count = 0
+                    var innerHTML = ''
+
+                    // create empty card for each graph to be drawn
+                    data.results.forEach(function(datum) { 
+                        // favorable stats card
+                        innerHTML += '<br/><div class="row"><div><h2 span class="card-title">' + datum.protected_attribute + '</h2></div><div class="col-md-12"><div class="card-deck" id="card-deck"><div class="card graph-card">'
+
+                        innerHTML += '<br/><div class="card-body"><h2 span class="card-title">Proportion of Favorable Outcomes</h2><p style="font-size:12px">Description of metric pulled from glossary_data</p><p style="font-size:12px">Auto generated explanation of metric. </p><span id="report-graph' + count + '"></span></div></div>'
+
+                        count = count + 1
+                        // Accuracy vs Fairness card
+                       /* innerHTML += '<div class="card graph-card"><div class="card-body"><h2 span class="card-title">Accuracy vs Fairness</h2><span id="report-graph' + count + '"></span></div></div>'
+                        count = count + 1
+                      */  // card for each metric in datum.metrics
+                        datum.metrics.forEach(function(result) { 
+                            innerHTML += '<div class="card graph-card"><div class="card-body"><h2 span class="card-title">'+ result.name + '</h2><p style="font-size:12px">Description of metric pulled from glossary_data</p><p style="font-size:12px">Auto generated explanation of metric. </p><span id="report-graph' + count + '"></span></div></div>'
+                            count = count + 1
+                        })
+                        innerHTML += '</div></div></div>'
+                    })
+                    document.getElementById('card-deck').innerHTML = innerHTML
+                    
+
+                    count = 0;
+
+                    // draw graphs for each protected attribute data.results
+                    data.results.forEach(function(datum) { 
+                        console.log( "about to draw graph!" );
+                        console.log(datum);
+                        //bindto = '#report-graph' + count
+                        //drawoutcomes(datum.confusion, bindto)
+                        //count = count + 1
+                        bindto = '#report-graph' + count
+                        drawmetricsgraph(datum.favorable_outcome_probabilities, bindto)
+                        count = count + 1
+                        bindto = '#report-graph' + count
+                        // draw accuracy vs fairness graph
+                        /*drawAccuracyVsFairnessgraph(datum.accuracy_vs_fairness, bindto)
+                        count = count + 1
+                        */// draw favorable probabilities graph
+                        //bindto = '#report-graph' + count
+                        //drawFavorableProbsgraph(datum, bindto)
+                        //count = count + 1
+                        // draw graph for each metric in datum.metrics
+                        datum.metrics.forEach(function(result) { 
+                            //console.log(result.name)
+                            bindto = '#report-graph' + count
+                            drawmetricsgraph(result, bindto)
+                            count = count + 1
+                        });
+                    });
+                }
+            })
+    });
+    </script>
+{% endblock %}
+{% block content %}
+
+<!-- ****************** navbar ****************** -->
+<nav class="navbar sticky-top navbar-expand-md navbar-dark mr-auto">
+    <span class="navbar-brand d-flex flex-fill" aria-label="breadcrumb"><a href="#">IBM Research AI Fairness 360</a></span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent" style="font-size: larger">
+        <ul class="navbar-nav justify-content-left d-flex flex-fill">
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Demo</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/resources">Resources</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/people">People</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br/>
+
+<!-- ****************** top section ****************** -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-5">
+            <h1 style="font-size: 14pt">Bias Check and Repair Demo</h1>
+            <ul class="prog-steps">
+                <li id="li-data" class="set">Dataset</li>
+                <li id="li-attributes" class="set">Attributes</li>
+                <li id="li-metrics" class="set">Metrics</li>
+                <li class="current">Report</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary float-right step-button" onclick="newreport()">Start over</button>
+            <button type="button" class="btn btn-secondary float-right step-button" onclick="prev()">Back</button>
+        </div>
+    </div>
+</div>
+<br/>
+
+<!-- ****************** main panel ****************** -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="steppanel rounded">
+                <div>
+                    <span class="steppanel-title">4. Compare original vs. remediated results</span>
+                    <br/><br/>
+                    <span>Summary</span>
+                    <hr/>
+                    <span>The Reweighing Mitigation Algorithm was applied.</span>
+                    <br/>
+                    <span>Bias was reduced to acceptable levels for 4 of 5 metrics</span>
+                    <br/>
+                    <!-- **** graphs **** -->
+                    <div class="container-fluid" id="card-deck"></div>
+                </div>
+            </div> 
+        </div>
+    </div>
+</div>
+
+<!-- ****************** modals ****************** -->
+<div class="modal fade" id="definition" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p><div id="def-content"></div></p>
+                <br/>
+                <div><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    // add listeners for data
+    var li_data = document.getElementById('li-data');
+    li_data.addEventListener('click', function(e) {
+        document.location="/data"
+    }, false);
+    li_data.addEventListener('mouseover', function(e) {
+        $('#li-data').css('cursor', 'pointer');
+    }, false);
+    // add listeners for attributes
+    var li_attributes = document.getElementById('li-attributes');
+    li_attributes.addEventListener('click', function(e) {
+        document.location="/attributes"
+    }, false);
+    li_attributes.addEventListener('mouseover', function(e) {
+        $('#li-attributes').css('cursor', 'pointer');
+    }, false);
+    // add listeners for metrics
+    var li_metrics = document.getElementById('li-metrics');
+    li_metrics.addEventListener('click', function(e) {
+        document.location="/metrics"
+    }, false);
+    li_metrics.addEventListener('mouseover', function(e) {
+        $('#li-metrics').css('cursor', 'pointer');
+    }, false);
+</script>
+{% endblock %}

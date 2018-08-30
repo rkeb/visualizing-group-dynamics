@@ -1,0 +1,5 @@
+---
+applications:
+ - name: 'Group Dynamics Demo'
+   memory: 512M
+   buildpack: https://github.com/cloudfoundry/python-buildpack.git#v1.6.19

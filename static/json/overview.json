@@ -1,0 +1,11 @@
+[
+	{"name":"<a href = \"https://archive.ics.uci.edu/ml/datasets/adult\">Adult census income</a>",
+	"status": "Done", "description":"Predict whether income exceeds $50K/yr based on census data."}, 
+	{"name":"<a href = \"https://archive.ics.uci.edu/ml/datasets/Bank+Marketing\">Bank marketing</a>", 
+	"status": "Done", "description":"The data is related with direct marketing campaigns (phone calls) of a Portuguese banking institution. The classification goal is to predict if the client will subscribe a term deposit (variable y)."}, 
+	{"name":"<a href = \"https://github.com/propublica/compas-analysis\">Compas (ProPublica recidivism)</a>",
+	"status": "Done", "description":"This repository contains a Jupyter notebook and data for the <a href = \"https://www.propublica.org/article/\">ProPublica \"Machine Bias.\" story</a>"}, 
+	{"name":"<a href = \"https://archive.ics.uci.edu/ml/datasets/Statlog+%28German+Credit+Data%29\">German credit scoring</a>",
+	"status": "Done", "description":"This dataset classifies people described by a set of attributes as good or bad credit risks."}
+		
+]

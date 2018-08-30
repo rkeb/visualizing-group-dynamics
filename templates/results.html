@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+{% block title %}AI Fairness Toolkit - Demo{% endblock %}
+{% block head %}
+    {{ super() }}
+            
+    <!-- Load c3.css -->
+    <link href="/static/css/c3.css" rel="stylesheet">
+    <link href="/static/css/graph.css" rel="stylesheet"> 
+
+    <!-- Load d3.js and c3.js -->
+    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+    <script src="static/js/c3.js"></script>  
+    <script src="static/js/graphs.js"></script>
+
+    
+    <script type="text/javascript" charset="utf-8">
+        var bias_thresholds = {
+            'Statistical Parity Difference':-0.2, 'Equal Opportunity Difference':-0.2, 'Average Odds Difference':-0.2 , 'Disparate Impact':0.8, 'Theil Index':-0.2}
+        var still_biased = 0;
+        var num_metrics = 5;
+        var bias_count_original = 0;
+        var chart;
+        var bias_reduced = 0;
+        var data = sessionStorage.getItem("data")
+        var attributes = sessionStorage.getItem("attributes")
+        var attribute_array = attributes.split(',')
+        var metrics = sessionStorage.getItem("metrics")
+        var metric_array = metrics.split(',')
+        var mitigation = sessionStorage.getItem("repair")
+       
+        function showDefinition(str) {
+            def_string = 'insert definition from json for: ' + str
+            $("#definition").modal()
+        }
+        $(window).on('shown.bs.modal', function() {
+            var div = document.getElementById('def-content')
+            if (div)
+                div.innerHTML = def_string
+        })
+        function newreport() {
+            sessionStorage.setItem("data", '')
+            sessionStorage.setItem("attributes", '')
+            sessionStorage.setItem("metrics", '')
+            sessionStorage.setItem("mitigation", '')
+            location = "/data"
+        }
+        function prev() {
+            location = "/mitigate"
+        }
+
+        function moveUp(thisObject){
+            //get the biasregion class under this object
+            thisObject.appendTo(thisObject.parent());
+        }
+
+        $(document).ready(function() {
+            document.getElementById('mitigation').innerHTML = "The " + mitigation + " algorithm was applied. <br/>"
+            var f = new FormData()
+            f.append("dataset", data)
+            f.append("mitigation", mitigation)
+            attribute_array.forEach(function(attribute) {
+                f.append("protected_attributes", attribute)
+            })
+            metric_array.forEach(function(metric) {
+                f.append("metrics", metric)
+            })
+            $("a").on("click touchend", function(e) {
+                var el = $(this);
+                var link = el.attr("href");
+                window.location = link;
+            });
+            $.ajax({
+                type: "POST",
+                url: "/demo/bias_report",
+                data: f,
+                processData: false,
+                contentType: false,
+                dataType: "json",
+                error: function(jqXHR, textStatus, errorMessage) {
+                    console.error(errorMessage);
+                },
+                success: function(data) {
+                    var ordering = ['Statistical Parity Difference', 'Equal Opportunity Difference', 'Average Odds Difference', 'Disparate Impact', 'Theil Index'];
+                    var innerHTML = ''
+
+                    var bias_summary_title = '4. Compare original vs. mitigated results for ' + data.dataset + ' dataset'
+                    $("#biassummary_title").append(bias_summary_title)
+                    biassummary_json = JSON.parse(sessionStorage.getItem("biassummary"))
+                    // create empty card for each graph to be drawn
+                    data.results.forEach(function(datum) { 
+                    
+                    // favorable stats card
+                        innerHTML += '<div class="row"><div><h2 span class="attribute-title">Protected Attribute: ' + datum.protected_attribute + '</h2></div><div class="col-md-12"><hr/><div class="card-deck" id="card-deck">'
+                        var ordered_metrics = []
+                        datum.metrics.forEach(function(metric) { 
+                            index = ordering.indexOf(metric.name)
+                            ordered_metrics[index] = metric
+                        })
+
+                       ordered_metrics.forEach(function(result) {                     
+                            count = ordering.indexOf(result.name)
+                            explanation = JSON.parse(result.explanation);
+                            explanation_string = explanation.metric + '<br>' + explanation.description + '&nbsp;'+ explanation.ideal
+                            
+                            innerHTML += '<div class="card graph-card"><div class="card-body"><span class="superscript" onclick="explanation_string = \'' + explanation_string + '\'; showExplanation(explanation_string)">&#9432</span><h2 span class="graph-card-title">'+ result.name + ' </h2><span id="report-graph_' + count + '_' + datum.protected_attribute + '"></span></div></div>'
+                        })
+                        innerHTML += '</div><br/></div></div>'
+                    })
+                    document.getElementById('card-deck').innerHTML = innerHTML
+                    
+
+                    // draw graphs for each protected attribute data.results
+                    data.results.forEach(function(datum) { 
+                        var ordered_metrics = []
+                        datum.metrics.forEach(function(metric) { 
+                            index = ordering.indexOf(metric.name)
+                            ordered_metrics[index] = metric
+                        })
+                         ordered_metrics.forEach(function(result) { 
+                            if (result.name == 'Disparate Impact') {
+                                 if (biassummary_json[datum.protected_attribute][result.name] == 'biased') {
+                                    if (result['mitigated']> bias_thresholds[result.name]) {
+                                        bias_reduced = bias_reduced + 1
+                                    }
+                                    else {
+                                        still_biased = still_biased + 1
+                                    }
+                                }
+                            }
+                            else {
+                                if (biassummary_json[datum.protected_attribute][result.name] == 'biased'){
+                                    if ((result['mitigated'] > bias_thresholds[result.name]) && (result['mitigated'] < 0 )){
+                                         bias_reduced = bias_reduced + 1
+                                    }
+                                    else {
+                                        still_biased = still_biased + 1
+                                    }
+                                }
+                            }    
+                            count = ordering.indexOf(result.name)
+                            bindto = '#report-graph_' + count + '_' + datum.protected_attribute 
+                            drawmetricsgraph(result, bindto)
+                            moveUp($(bindto + ' .c3-regions'));
+                            $('.c3-text').css('fill', '#4A4A4A');
+                        });
+                        bias_report_summary = 'For protected attribute ' + datum.protected_attribute + ', bias was reduced to acceptable levels for ' + bias_reduced + ' of ' + num_metrics + ' metrics. ' + still_biased +   ' of ' + num_metrics + ' metrics still indicate bias. <br/>'
+                        bias_reduced = 0;
+                        still_biased = 0
+                       // bias_report_summary = 'For protected attribute ' + datum.protected_attribute + ', bias was detected in ' + bias_count_original+ ' out of ' + num_metrics + ' metrices in this dataset. <br/>' 
+                        $("#biassummary").append(bias_report_summary)
+                    });
+                }
+            })
+    });
+    </script>
+{% endblock %}
+{% block content %}
+
+<!-- ****************** navbar ****************** -->
+<nav class="navbar sticky-top navbar-expand-md navbar-dark mr-auto">
+    <span class="navbar-brand d-flex flex-fill" aria-label="breadcrumb"><a href="#">IBM Research AI Fairness 360</a></span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent" style="font-size: larger">
+        <ul class="navbar-nav justify-content-left d-flex flex-fill">
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/data">Demo</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/resources">Resources</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/people">People</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br/>
+
+<!-- ****************** top section ****************** -->
+<div class="container-fluid top-section">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="title">Bias Check and Repair Demo</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5">
+            <ul class="prog-steps">
+                <li id="li-data" class="set">Data</li>
+                <li id="li-check" class="set">Check</li>
+                <li id="li-repair" class="set">Mitigate</li>
+                <li class="current">Results</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary float-right step-button" onclick="newreport()">Start over</button>
+            <button type="button" class="btn btn-secondary float-right step-button" onclick="prev()">Back</button>
+        </div>
+    </div>
+</div>
+<br/>
+
+<!-- ****************** step panel ****************** -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="step-panel">
+                <h2 class="title" id='biassummary_title'></h2>
+                <p>
+                    <span class="mitigation" id="mitigation"></span>
+                    <span id='biassummary' style="font-weight: bolder"> </span>
+                    Each chart shows the difference between outcomes for privileged and unprivileged groups based on a particular type of metric measure. Default tolerance thresholds are also displayed.
+                </p>
+                <!-- **** graphs **** -->
+                <div class="container-fluid" id="card-deck"></div>
+            </div> 
+        </div>
+    </div>
+</div>
+
+<!-- ****************** modals ****************** -->
+<div class="modal" id="definition" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p><div id="def-content"></div></p>
+                <br/>
+                <div><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ****************** listeners for backwards progress steps ****************** -->
+<script type="text/javascript" charset="utf-8">
+    // data
+    var li_data = document.getElementById('li-data');
+    li_data.addEventListener('click', function(e) {
+        document.location="/data"
+    }, false);
+    li_data.addEventListener('mouseover', function(e) {
+        $('#li-data').css('cursor', 'pointer');
+    }, false);
+    // check
+    var li_check = document.getElementById('li-check');
+    li_check.addEventListener('click', function(e) {
+        document.location="/check"
+    }, false);
+    li_check.addEventListener('mouseover', function(e) {
+        $('#li-check').css('cursor', 'pointer');
+    }, false);
+    // repair
+    var li_repair = document.getElementById('li-repair');
+    li_repair.addEventListener('click', function(e) {
+        document.location="/mitigate"
+    }, false);
+    li_repair.addEventListener('mouseover', function(e) {
+        $('#li-repair').css('cursor', 'pointer');
+    }, false);
+</script>
+{% endblock %}

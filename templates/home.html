@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title %}AI Fairness Toolkit - Home{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script type="text/javascript" charset="utf-8">
+        sessionStorage.setItem("data", '')
+        sessionStorage.setItem("attributes", '')
+        sessionStorage.setItem("metrics", '')
+        sessionStorage.setItem("repair", '')
+        function experiment() {
+            location = "/data"
+        }
+        function github() {
+            location = "https://github.ibm.com/samya/samya-bias-toolbox";
+        }
+        $(document).ready(function() {
+            $( ".card" ).hover(
+            function() {
+                $(this).addClass('shadow-lg').css('cursor', 'pointer'); 
+            }, function() {
+                $(this).removeClass('shadow-lg');
+            })
+        })
+    </script>
+{% endblock %}
+{% block content %}
+
+<!-- ****************** navbar ****************** -->
+<nav class="navbar sticky-top navbar-expand-md navbar-dark mr-auto">
+    <span class="navbar-brand d-flex flex-fill" aria-label="breadcrumb"><a href="#">IBM Research Trusted AI</a></span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent" style="font-size: larger">
+        <ul class="navbar-nav justify-content-left d-flex flex-fill">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/data">Demo</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/resources">Resources</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/people">People</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/community">Community</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br/>
+    
+<!-- ****************** top section ****************** -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 top-section">
+            <h1 class="title">IBM Research AI Fairness 360</h1>
+            <br/>
+            <p>This open source toolkit can help developers examine, report, and repair discrimination and bias in machine learning data models throughout the AI application lifecycle.</p>
+            <br/>
+            <button type="button" class="btn btn-secondary" onclick="github()">Access the Code on GitHub</button>
+        </div>
+    </div>
+</div>
+
+<!-- ****************** card array ****************** -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="home-panel">
+                <div class="card-deck">
+                    <a href="/resources">
+                        <div class="card" style="background-color: #FFFFFF">
+                            <div class="card-body">
+                                <h2 span class="card-title">Read More</h2>
+                                <p class="card-text">Link to the Resources are where you can learn more about data bias and remediation before you begin.</p>
+                            </div>
+                            <br>
+                            <img class="card-arrow" src="static/images/arrow-copy-3.png" alt="*">
+                        </div>
+                    </a>
+                    <a href="/data">
+                        <div class="card" style="background-color: #87EDED">
+                            <div class="card-body">
+                                <h2 span class="card-title">Demo</h2>
+                                <p class="card-text">Step through the process of checking and remediating bias in an interactive web demo that shows a sample of capabilities available in this toolkit.</p>
+                            </div>
+                            <br>
+                            <img class="card-arrow" src="static/images/arrow-copy-3.png" alt="*">
+                        </div>
+                    </a>
+                    <a href="#">
+                        <div class="card" style="background-color: #9DEEB2">
+                            <div class="card-body">
+                                <h2 span class="card-title">Tutorial</h2>
+                                <p class="card-text">Open a tutorial in GitHub that introduces programmers to how they can use the code to check and remediate bias in AI systems.</p>
+                            </div>
+                            <br>
+                            <img class="card-arrow" src="static/images/arrow-copy-3.png" alt="*">
+                        </div>
+                    </a>
+                    <a href="#">
+                        <div class="card" style="background-color: #B3E6FF">
+                            <div class="card-body">
+                                <h2 span class="card-title">Medical Expenses</h2>
+                                <p class="card-text">View a tutorial with an associated Jupyter notebook that shows how data in a Medical Expense Processing dataset has bias issues mitigated and predictions explained.</p>
+                            </div>
+                            <br>
+                            <img class="card-arrow" src="static/images/arrow-copy-3.png" alt="*">
+                        </div>
+                    </a>
+                    <a href="#">
+                        <div class="card" style="background-color: #B3E6FF">
+                            <div class="card-body">
+                               <h2 span class="card-title">Image Classifier</h2>
+                                <p class="card-text">View a tutorial wth an associated Jupyter notebook that shows how data in a UTK faces dataset has gender bias issues mitigated.</p>
+                            </div>
+                            <img class="card-arrow" src="static/images/arrow-copy-3.png" alt="*">
+                        </div>
+                    </a>
+                    <a href="#">
+                        <div class="card" style="background-color: #C9DEFF">
+                            <div class="card-body">
+                                <h2 span class="card-title">Algorithms</h2>
+                                <p class="card-text">Open a directory of Jupyter notebooks that demonstrate how algorithms can repair bias at different pipeline stages of an AI application.</p>
+                                <br/>
+                            </div>
+                            <br>
+                            <img class="card-arrow" src="static/images/arrow-copy-3.png" alt="*">
+                        </div>
+                    </a>
+                    <a href="#">
+                        <div class="card" style="background-color: #C7CBD2">
+                            <div class="card-body">
+                                <h2 span class="card-title">Research Papers</h2>
+                                <p class="card-text">Link back to the main IBM Trusted AI site where the research behind the technology is described.</p>
+                                <br/>
+                            </div>
+                            <br>
+                            <img class="card-arrow" src="static/images/arrow-copy-3.png" alt="*">
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>      
+{% endblock %}

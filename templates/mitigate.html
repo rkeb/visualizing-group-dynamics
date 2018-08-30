@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% block title %}AI Fairness Toolkit - Demo{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script type="text/javascript" charset="utf-8">
+        $(window).on('load', function() {
+            var repair = sessionStorage.getItem('repair')
+            console.log('repair: ' + repair)
+            if (repair) {
+                var radio = document.getElementById(repair)
+                radio.checked = true
+            };
+        })
+        function setSelection(str) {
+            sessionStorage.setItem('repair', str)
+        }
+        function showDefinition(str) {
+            def_string = glossary_json[str]
+            console.log(def_string)
+            $("#definition").modal()
+        };
+        $(window).on('shown.bs.modal', function() {
+            var div = document.getElementById('def-content')
+            if (div)
+                div.innerHTML = def_string
+        })
+        function next() {
+            var repair = sessionStorage.getItem('repair')
+            if (repair == '') {
+                $("#notReady").modal()
+                return
+            }
+            location = '/compare'
+        }
+        function prev() {
+            location = '/check'
+        }
+    </script>
+{% endblock %}
+{% block content %}
+
+<!-- ****************** navbar ****************** -->
+<nav class="navbar sticky-top navbar-expand-md navbar-dark mr-auto">
+    <span class="navbar-brand d-flex flex-fill" aria-label="breadcrumb"><a href="#">IBM Research Trusted AI</a></span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent" style="font-size: larger">
+        <ul class="navbar-nav justify-content-left d-flex flex-fill">
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/data">Demo</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/resources">Resources</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/people">People</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/community">Community</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br/>
+
+<!-- ****************** top section ****************** -->
+<div class="container-fluid top-section">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="title">Bias Check and Repair Demo</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-5">
+            <ul class="prog-steps">
+                <li id="li-data" class="set">Data</li>
+                <li id="li-check" class="set">Check</li>
+                <li id="li-repair" class="current">Mitigate</li>
+                <li class="inactive">Compare</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+                <button type="button" class="btn btn-primary float-right step-button" onclick="next()">Next</button>
+                <button type="button" class="btn btn-secondary float-right step-button" onclick="prev()">Back</button>
+        </div>
+    </div>
+</div>
+<br/>
+
+<!-- ****************** step panel ****************** -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="step-panel">
+                    <h2 class="title">3. Choose bias mitigation algorithm</h2>
+                    <p>A variety of algorithms  can be used to mitigate bias. The choice of which to use depends on whether data (pre-process), classifier (in-process), or prediction (post-process) corrections are possible.</p>
+                    <!-- **** Reweighing **** -->
+                    <div><input type="radio" name="radio-group" id="Reweighing" onclick="setSelection('Reweighing')"><span class="choice"> Reweighing</span></div>
+                    <div class="description">Weights the examples in each (group, label) combination differently to ensure fairness before classification.</div>
+                    <br/>
+                    <div class="diagram">
+                        <div class="diagramElement">
+                            <object type="image/svg+xml" data="/static/svg/Preprocess.svg" class="diagramElementBackgroundNolight">
+                            Your browser does not support SVGs
+                            </object>
+                        </div>
+                    </div>
+                    <br/>
+                    <hr/>
+                    <br/>
+                    <!-- **** Optimized pre-processing **** -->
+                    <div><input type="radio" name="radio-group" id="Optimized pre-processing" onclick="setSelection('Optimized Pre-processing')"><span class="choice"> Optimized Pre-Processing</span></div>
+                    <div class="description">Learns a probabilistic transformation that can modify the features and the labels in the data. Useful for mitigating bias during classifier training.</div>
+                    <br/>
+                    <div class="diagram">
+                        <div class="diagramElement">
+                            <object type="image/svg+xml" data="/static/svg/Preprocess.svg" class="diagramElementBackgroundNolight">
+                            Your browser does not support SVGs
+                            </object>
+                        </div>
+                    </div>
+                    <br/>
+                    <hr/>
+                    <br/>
+                    <!-- **** TBD in-processing **** -->
+                    <div><input type="radio" name="radio-group" id="TBD in-processing" onclick="setSelection('Adversarial Debiasing')"><span class="choice">Adversarial Debiasing In-processing</span></div>
+                    <div class="description">Description here.</div><br/>
+                    <div>
+                        <div class="diagram">
+                            <div class="diagramElement">
+                                <object type="image/svg+xml" data="/static/svg/Inprocess.svg" class="diagramElementBackgroundNolight">
+                                Your browser does not support SVGs
+                                </object>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                    <hr/>
+                    <br/>
+                    <!-- **** Disagreement Region **** -->
+                    <div><input type="radio" name="radio-group" id="Disagreement Region" onclick="setSelection('Disagreement Region')"><span class="choice">Disagreement Region</span></div>
+                    <div class="description">An ensemble of classifiers is trained and where they disagree on classification of deprived and favored group instances, these instances are sampled and relabeled for reduced discrimination.</div><br/>
+                    <div>
+                        <div class="diagram">
+                            <div class="diagramElement">
+                                <object type="image/svg+xml" data="/static/svg/Postprocess.svg" class="diagramElementBackgroundNolight">
+                                Your browser does not support SVGs
+                                </object>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+</div>
+
+<!-- ****************** modals ****************** -->
+<div class="modal" id="notReady" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p><div>Please select a bias mitigation algorithm before continuing.</div></p>
+                <div><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="definition" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <p><div id="def-content">
+                </div></p>
+                <div><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ****************** listeners for backwards progress steps ****************** -->
+<script type="text/javascript" charset="utf-8">
+    // data
+    var li_data = document.getElementById('li-data');
+    li_data.addEventListener('click', function(e) {
+        document.location="/data"
+    }, false);
+    li_data.addEventListener('mouseover', function(e) {
+        $('#li-data').css('cursor', 'pointer');
+    }, false);
+    // check
+    var li_check = document.getElementById('li-check');
+    li_check.addEventListener('click', function(e) {
+        document.location="/check"
+    }, false);
+    li_check.addEventListener('mouseover', function(e) {
+        $('#li-check').css('cursor', 'pointer');
+    }, false);
+</script>
+{% endblock %}

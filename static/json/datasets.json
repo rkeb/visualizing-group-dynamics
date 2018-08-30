@@ -1,0 +1,23 @@
+[
+	{"id": "adult",
+		"name": "Adult census income",
+		"url": "https://archive.ics.uci.edu/ml/datasets/adult",
+		"description":"Predict whether income exceeds $50K/yr based on census data.",
+		"attributes": "Race, Gender",
+		"size":"48,842 records",
+		"status": "Done"},  
+	{"id": "compas",
+		"name":"Compas (ProPublica recidivism)",
+		"url": "https://github.com/propublica/compas-analysis",
+		"description":"This repository contains a Jupyter notebook and data for the ProPublica \"Machine Bias.\" story.",
+		"attributes": "Gender, Race",
+		"size":"7,214 records",
+		"status": "Done"},  
+	{"id": "german",
+		"name": "German credit scoring",
+		"url": "https://archive.ics.uci.edu/ml/datasets/Statlog+%28German+Credit+Data%29",
+		"description":"This dataset classifies people described by a set of attributes as good or bad credit risks.",
+		"attributes": "Gender, Age",
+		"size":"1,000 records",
+		"status": "Done"}	
+]

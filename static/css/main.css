@@ -1,0 +1,440 @@
+/* note: media query breakpoints below same min-width as bootstrap navbar-expand */
+
+body {
+    background-color: #F3F3F3;
+    font-family: 'IBM Plex Sans';
+}
+body .modal {
+    width: 90%;
+    margin-left:auto;
+    margin-right:auto; 
+}
+button {
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
+    height: 48px !important;
+}
+.btn-primary {
+    background-color: #0F6FFF !important;
+}
+.btn-secondary {
+    background-color: #3D3D3D !important;
+}
+hr {
+    padding: 0;
+    margin:0;
+}
+a:hover {
+    text-decoration: none;
+}
+a:visited {
+    text-decoration: none;
+}
+/* find a way to limit this to cards */
+*:focus {
+    outline: none;
+}
+
+/* ****************** navbar ****************** */
+.navbar {
+    background: #010101;
+}
+.nav-item {
+    font-size: 0.875rem;
+    margin-right: 1.5rem;
+    color: #F3F3F3;
+}
+.navbar-nav > .active > a {
+    font-weight: 800 !important;
+}
+.navbar-nav > .inactive > a {
+    font-weight: 100 !important;
+    color: #D0D0D0 !important;
+}
+.navbar-toggler {
+    /*border-color: rgba(200, 200, 200, 50%) !important;*/
+    border: none;
+}
+.navbar-brand {
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #6EA6FF;
+}
+.navbar-brand a:hover {
+    text-decoration: none;
+    color: #7EA6FF;
+}
+@media screen and (min-width: 768px) {
+    .navbar-brand {
+        border-right: 1px solid #868D95;
+    }
+    .nav-item.active a:after {
+        content: "";
+        position: relative; 
+        display: block;
+        margin: 0 auto;
+        width: 96%;
+        top: 0.2rem;      
+        border-bottom: 4px solid #0064FF;
+    }
+    .nav-item.inactive a:hover:after {
+        content: ""; 
+        position: relative;
+        display: block;
+        margin: 0 auto;
+        width: 96%;
+        top: 0.2rem;      
+        border-bottom: 4px solid #0064FF;
+    }
+}
+
+/* ****************** top section ****************** */
+.top-section {
+    padding-left: 2em;
+}
+.top-section .title {
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+@media screen and (min-width: 768px) {
+    .top-section .title {
+        font-size: 1.125rem;
+    }
+}
+.top-section > p {
+    font-size: 1rem;
+    font-weight: 400;
+    width: 100%;
+}
+.top-section > p {
+    width: 94%;
+}
+@media screen and (min-width: 768px) {
+    .top-section > p {
+        width: 70%;
+    }
+}
+
+/* ****************** progress steps ****************** */
+.prog-steps {
+    margin-left: 0.5em;
+    width: 380px;
+}
+@media screen and (max-width: 400px) {
+	.prog-steps {
+		width: 320px;
+	}
+}
+.prog-steps li {
+    list-style-type: none;
+    width: 25%;
+    float: left;
+    font-size: 0.875rem;
+    position: relative;
+    top: 0.7rem;
+    left: -4.5em;
+    text-align: center;
+    color: #7d7d7d;
+}
+.prog-steps li.set:before {
+    width: 1.4rem;
+    height: 1.4rem;
+    font-weight: bold;
+    content: '';
+    line-height: 1.6rem;
+    border: 2px solid #7d7d7d;
+    display: block;
+    text-align: center;
+    margin: 0 auto 10px auto;
+    border-radius: 50%;
+    background-color: #3D3D3D;
+}
+.prog-steps li.current:before {
+    width: 1.4rem;
+    height: 1.4rem;
+    content: '';
+    line-height: 1.4rem;
+    border: 5px solid #7d7d7d;
+    display: block;
+    text-align: center;
+    margin: 0 auto 10px auto;
+    border-radius: 50%;
+    background-color: white;
+}
+.prog-steps li.inactive:before {
+    width: 1.4rem;
+    height: 1.4rem;
+    content: '';
+    line-height: 2em;
+    border: 2px solid #7d7d7d;
+    display: block;
+    text-align: center;
+    margin: 0 auto 10px auto;
+    border-radius: 50%;
+    background-color: white;
+}
+.prog-steps li:after {
+    width: 100%;
+    height: 2px;
+    content: '';
+    position: absolute;
+    background-color: #7d7d7d;
+    top: 0.7rem;
+    left: -50%;
+    z-index: -1;
+}
+.prog-steps li:first-child:after {
+    content: none;
+}
+.prog-steps li.active {
+    color: #007bff;
+}
+
+/* ****************** step-panel ****************** */
+.step-panel {
+    margin-left: -15px;
+    margin-right: -15px;
+    background: white;
+    justify-content: left;
+    padding: 2em;
+    color:#3D3D3D;
+    margin-top: 1rem;
+}
+.step-button {
+    position: relative;
+    top: 1.4rem;
+    margin-right: 0.5em;
+}
+@media screen and (min-width: 550px) {
+    .step-panel {  /* eliminate the unneeded space below the buttons */
+        margin-top: -2.6rem;
+    }
+    .step-button {
+        top: -3.6rem;
+    }
+}
+.step-panel .title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding-left: 1.6rem;
+    text-indent: -1.6rem;
+    /*padding-bottom: 0.2rem;*/
+}
+@media screen and (min-width: 768px) {
+    .step-panel .title {
+        font-size: 1.25rem;
+    }
+}
+.step-panel p {
+    font-size: 0.875rem;
+    font-weight: 400;
+    margin-left: 1.6rem;
+    padding-right: 1rem;
+}
+.step-panel .choice {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-left: 0.2rem;
+}
+.step-panel .description {
+    font-size: 0.875rem;
+    font-weight: 400;
+    margin-left: 1.23rem;
+}
+
+/* ****************** containers and tabs ****************** */
+.container {
+    justify-content: left;
+    align-items: left;
+}
+.home-panel {
+    margin-left: -15px;
+    margin-right: -15px;
+    justify-content: left;
+    padding: 2em;
+    color:#3D3D3D;
+}
+.resources-panel {
+    margin-left: 1em;
+    margin-right: 1em;
+    justify-content: left;
+    padding: 2em;
+    background-color:white;
+}
+.resources-panel {
+    font-size: 0.875rem;
+    font-weight: 400;
+}
+.nav-tabs {
+    margin-left: -1em;
+}
+.nav-item a {
+    color:#3D3D3D;
+}
+
+/* ****************** card ****************** */
+.card-deck {
+    justify-content: left;
+    align-items: left;
+}
+.card {
+    min-width: 15rem;
+    max-width: 15rem;
+    margin-top: 1rem;
+    max-height: 16rem;
+    min-height: 16rem;
+    color:#171717;
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
+    border: none;
+}
+.card-title {
+    font-size: 1.25rem !important;
+    font-weight: 600;
+    height: 2rem;
+}
+.card-text {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.25em;
+}
+.card p {
+    width: 100%;
+}
+.card a {
+    text-decoration: none;
+    color:#171717
+}
+.card-body h2 {
+    font-size: 0.875rem;
+}
+.card-body {
+    height: 10rem;
+}
+.card-arrow {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    margin-left: 1em;
+    margin-bottom: 0.5em;
+}
+
+/* ****************** graph card ****************** */
+.graph-card {
+    min-width: 221px;
+    max-width: 221px;
+    min-height: 248px;
+    max-height: 248px;
+    margin-top: 0.75em;
+    margin-left: 0.5em;
+    background-color:#F3F3F3;
+}
+.graph-card-title {
+    font-size: 0.8rem !important;
+    font-weight: 600;
+    height: 2rem;
+    cursor: pointer;
+}
+/* ****************** person card ****************** */
+.person-card {
+    min-width: 218px;
+    max-width: 218px;
+    min-height: 180px;
+    max-height: 180px;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    background-color: white;
+}
+.person-image {
+    position: relative;
+    top: -20px;
+    left: -20px;
+}
+.person-name {
+    font-size: 0.875rem;
+    margin-left:auto;
+    margin-right:auto; 
+}
+
+/* ****************** modals ****************** */
+.modal-content {
+    background-color: whitesmoke;
+}
+.modal-body p {
+    text-align: left;
+}
+.modal-body button {
+    color: white;
+    background-color: #007bff;
+}
+
+/* ****************** text stylings ****************** */
+p {  /* assume navbar collapsed */
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.25rem;
+}
+@media screen and (min-width: 768px) {
+    p {
+        width: 70%;
+    }
+}
+.definition {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    cursor: help;
+}
+.attribute-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-left: 1rem;
+}
+.mitigation {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #0BBDBA;
+}
+a.license {
+    font-size: 0.75rem;
+    color: blue;
+}
+.text-black {
+    font-weight: 900;
+  }
+.text-extra-bold {
+    font-weight: 800;
+}
+.text-bold {
+    font-weight: 700;
+}
+.text-semi-bold {
+    font-weight: 600;
+}
+.text-medium {
+    font-weight: 500;
+}
+.text-normal {
+    font-weight: 400;
+}
+.text-light {
+    font-weight: 300;
+} 
+.text-extra-light {
+    font-weight: 200;
+}
+.text-thin {
+    font-weight: 100;
+}
+
+.superscript {
+    float:right;
+    top: -1.4em;
+    right: -1.2em;
+    position: relative;
+    cursor: pointer;
+    font-size: 0.8rem !important;
+    font-weight: 600;
+}

@@ -1,0 +1,115 @@
+<html>
+<head>
+ <meta charset="utf-8">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
+ <script>
+   $(document).ready(function() {
+          $.getJSON('/static/glossary_data/datasets.json', function(json){
+           $('#table-datasets').bootstrapTable({data: json});
+         });
+          $.getJSON('/static/glossary_data/algorithms.json', function(json){
+           $('#table-algorithms').bootstrapTable({data: json});
+         });
+
+          $.getJSON('/static/glossary_data/metrics.json', function(json){
+           $('#table-metrics').bootstrapTable({data: json});
+         });
+          
+          
+        });
+
+      </script>
+    </head>
+    <body>
+      <!-- ****************** navbar ****************** -->
+      <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light mr-auto">
+        <span class="navbar-brand" aria-label="breadcrumb"><a href="#"><span style="font-size: smaller">IBM Research AI Fairness 360</span></a></span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent" style="font-size: larger">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Experiment</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="#" target="_blank">Resources</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/resources">People</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <br>
+      <!-- ****************** tabs ****************** -->
+      <div class="container">
+        <ul class="nav nav-pills">
+          <li class="active"><a data-toggle="pill" href="#tutorial">Tutorial</a></li>
+          <li><a data-toggle="pill" href="#datasets">Datasets</a></li>
+          <li><a data-toggle="pill" href="#metrics">Metrics</a></li>
+          <li><a data-toggle="pill" href="#algorithms">Remediators</a></li>
+          <li><a data-toggle="pill" href="#glossary">Glossary</a></li>
+        </ul>
+        
+        <div class="tab-content">
+          <div id="tutorial" class="tab-pane fade in active">
+            <p>
+              <h3>Introduction to Tutorial</h3>
+              Brief overview of what the tutorial describes. blah blah blah alskjf;laksjf ;lksjf;lkjs;lfkjas;lfkja;lskdjf;aslkjdf;laksjf;laksj a;lskdjf a;l. a;lskdjf ;alskj ;lakjsa;lskdjf alskjf ;alskjdf;lsakjf;lskdfja s;lkdjflaskjdf;lkajs;fdlkja  ;alskjdf;lakjsdf;lkjsa;dfl kjasdfljkas ;laksjdf;lkajs;dflkjas;lkdflksdf
+            </p>
+          </div>
+          <div id="datasets" class="tab-pane fade in">
+            <table id="table-datasets" data-height="460">
+              <thead>
+                <tr>
+                  <th data-field="name">Dataset</th>
+                  <th data-field="description">Description</th>
+                  <th data-field="status">Status</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+          <div id="metrics" class="tab-pane fade in">
+            <table id="table-metrics" data-height="460">
+              <thead>
+                <tr>
+                  <th data-field="name">Metric Name</th>
+                  <th data-field="description">Description</th>
+                  <th data-field="Range and significance">Range and significance</th>
+                  <th data-field="status">Status</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+          <div id="algorithms" class="tab-pane fade in">
+            <h3>Remediators</h3>
+            <table id="table-algorithms" data-height="460">
+              <thead>
+                <tr>
+                  <th data-field="name">Remediator Name</th>
+                  <th data-field="type">When to use in ML pipeline</th>
+                  <th data-field="description">Description</th>
+                  <th data-field="status">Status</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+          <div id="glossary" class="tab-pane fade in">
+            <h3>Glossary</h3>
+            <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+
+
+

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}AI Fairness Toolbox - Experiment{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script type="text/javascript" charset="utf-8">
+        localStorage.setItem("data", '');
+        localStorage.setItem("attributes", '');
+        localStorage.setItem("metrics", '');
+
+        function experiment() {
+            location = "/data";
+        }
+    </script>
+{% endblock %}
+{% block content %}
+
+<!-- ****************** navbar ****************** -->
+<nav class="navbar sticky-top navbar-expand-xl navbar-light bg-light mr-auto">
+    <span class="navbar-brand d-flex flex-fill" aria-label="breadcrumb"><a href="#">IBM Research AI Fairness 360</a></span>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent" style="font-size: larger">
+        <ul class="navbar-nav justify-content-left d-flex flex-fill">
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Experiment</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/resources">Resources</a>
+            </li>
+            <li class="nav-item inactive">
+                <a class="nav-link" href="/people">People</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<br/>
+
+<div class="container-fluid container-gray rounded">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1 style="font-size: x-large">Explore bias direction and repair in an interactive report</h1>
+            <br/>
+            <button type="button" class="btn btn-primary" onclick="experiment()">Create a Bias Report ></button>
+        </div>
+    </div>
+</div>
+{% endblock %}
